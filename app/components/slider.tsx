@@ -1,17 +1,57 @@
 "use client";
 import React, { useRef } from "react";
-import { motion, PanInfo } from "framer-motion";
+import { motion, animate, useMotionValue } from "framer-motion";
 import { FiMinus, FiPlus } from "react-icons/fi";
 
-const Slider = () => {
-  const constraintRef = useRef<HTMLDivElement | null>(null);
+type SliderProps = {
+  min?: number;
+  max?: number;
+  onChange?: (value: number) => void;
+};
+const Slider = (props: SliderProps) => {
+  const min = props.min || 0;
+  const max = props.max || 100;
+
   const [value, setValue] = React.useState(0);
 
-  const onDragEnd = (e: any, info: PanInfo) => {
-    console.log("Drag end", { offset: info.offset.x });
+  const constraintRef = useRef<HTMLDivElement | null>(null);
+  const trackHandleRef = useRef<HTMLButtonElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+
+  const trackHandleX = useMotionValue(0);
+  React.useEffect(() => {
+    if (!trackRef.current) return;
+
+    let progress = value / (max - min);
+    let trackBounds = trackRef.current.getBoundingClientRect();
+    trackHandleX.set(progress * trackBounds.width);
+  }, [max, min, trackHandleX, value]);
+
+  const onDrag = () => {
+    if (!trackHandleRef.current || !trackRef.current) {
+      console.error("Dom element not available");
+      return;
+    }
+
+    const trackHandleBounds = trackHandleRef.current.getBoundingClientRect();
+    const middleOfBounds = trackHandleBounds.x + trackHandleBounds.width / 2;
+
+    const trackBounds = trackRef.current.getBoundingClientRect();
+    const newProgress = (middleOfBounds - trackBounds.x) / trackBounds.width;
+
+    setValue(newProgress * (max - min));
   };
-  const onPanEnd = (e: any, info: PanInfo) => {
-    console.log("Pan end", { offset: info.offset.x });
+
+  const onDragEnd = () => {
+    const newValue = Math.ceil(value / 10) * 10;
+    setValue(newValue);
+
+    if (!trackRef.current) return;
+    let progress = newValue / (max - min);
+    let trackBounds = trackRef.current.getBoundingClientRect();
+    animate(trackHandleX, progress * trackBounds.width);
+
+    props.onChange?.(newValue);
   };
 
   return (
@@ -20,15 +60,20 @@ const Slider = () => {
         <FiMinus />
       </button>
 
-      <div className="grow px-px" ref={constraintRef}>
+      <div className="grow px-px relative" ref={constraintRef}>
+        <div ref={trackRef} className="absolute h-full left-[32.4px] right-[32.6px]" />
+
         <motion.button
+          ref={trackHandleRef}
           className="w-fit bg-black rounded-full px-4 py-2"
+          style={{ x: trackHandleX }}
           drag="x"
           dragConstraints={constraintRef}
-          dragElastic={0.1}
-          dragTransition={{ bounceStiffness: 200, bounceDamping: 20 }}
+          dragElastic={0}
+          dragMomentum={false}
+          dragTransition={{ bounceStiffness: 200, bounceDamping: 50 }}
+          onDrag={onDrag}
           onDragEnd={onDragEnd}
-          onPanEnd={onPanEnd}
         >
           <p className="text-white text-sm">Days</p>
         </motion.button>
