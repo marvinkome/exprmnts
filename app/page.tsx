@@ -1,7 +1,11 @@
+import Slider from "./components/slider";
+
 export default function Home() {
   return (
-    <main>
-      <p>Welcome to my experimental lab</p>
+    <main className="container mx-auto px-4 py-2">
+      <p className="mb-6">Welcome to my experimental lab</p>
+
+      <Slider />
     </main>
   );
 }
