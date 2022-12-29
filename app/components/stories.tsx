@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { usePageLeave } from "react-use";
 import { motion, AnimatePresence, useMotionValue, useAnimationFrame, useTransform } from "framer-motion";
 import { wrap } from "popmotion";
 
@@ -22,6 +23,11 @@ const variants = {
   },
 };
 
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
+
 const Stories = () => {
   const storyTimer = 6000;
   const items = ["/story-1.jpg", "/story-2.jpg", "/story-3.jpg"];
@@ -29,32 +35,36 @@ const Stories = () => {
   const [[page, direction], setPage] = React.useState([0, 0]);
   const activeImage = wrap(0, items.length, page);
 
-  const { time, onTogglePause } = usePausableTime();
-  const x = useTransform(time, (value) => `${((value % storyTimer) / storyTimer) * 100 - 100}%`);
+  const { time, onPause, onResume, onReset } = usePausableTime();
+  const x = useTransform(time, (value) => {
+    return `${((value % storyTimer) / storyTimer) * 100 - 100}%`;
+  });
 
   const paginate = React.useCallback(
     (newDirection: number) => {
       setPage([page + newDirection, newDirection]);
+      onReset();
     },
-    [page]
+    [page, onReset]
   );
 
   React.useEffect(() => {
     const cancel = time.on("change", (t) => {
-      if (Math.floor(t / storyTimer) > page) {
+      if (Math.floor(t / storyTimer)) {
         paginate(1); // paginate in forward direction
       }
     });
     return () => cancel();
   }, [time, paginate, page]);
 
-  const onPointerDown = () => {
-    onTogglePause();
-  };
+  React.useEffect(() => {
+    const callBack = () => {
+      onPause();
+    };
 
-  const onPointerUp = () => {
-    onTogglePause();
-  };
+    document.addEventListener("visibilitychange", callBack);
+    return () => document.removeEventListener("visibilitychange", callBack);
+  }, [onPause]);
 
   return (
     <div className="max-w-[400px] h-[65vh] shadow-xl rounded-lg overflow-hidden relative">
@@ -73,13 +83,20 @@ const Stories = () => {
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={page}
-          custom={direction}
-          variants={variants}
+          drag="x"
+          exit="exit"
+          dragElastic={1}
           initial="enter"
           animate="center"
-          exit="exit"
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
+          custom={direction}
+          variants={variants}
+          onPointerDown={() => onPause()}
+          onPointerUp={() => onResume()}
+          onPointerCancel={() => onResume()}
+          onPointerOut={() => onResume()}
+          onPointerLeave={() => onResume()}
+          dragConstraints={{ left: 0, right: 0 }}
+          className="w-full h-full absolute top-0"
           transition={{
             x: {
               type: "spring",
@@ -87,9 +104,17 @@ const Stories = () => {
               duration: 0.8,
             },
           }}
-          className="w-full h-full absolute top-0"
+          onDragEnd={(e, { offset, velocity }) => {
+            const swipe = swipePower(offset.x, velocity.x);
+
+            if (swipe < -swipeConfidenceThreshold) {
+              paginate(1);
+            } else if (swipe > swipeConfidenceThreshold) {
+              paginate(-1);
+            }
+          }}
         >
-          <Image src={items[activeImage]} alt="story" priority fill className="object-cover" />
+          <Image src={items[activeImage]} alt="story" priority fill className="object-cover pointer-events-none rounded-lg" />
         </motion.div>
       </AnimatePresence>
     </div>
@@ -101,36 +126,54 @@ function usePausableTime() {
   const [isRunning, setIsRunning] = React.useState(true);
 
   const time = useMotionValue(0);
-  const timePaused = useMotionValue(0);
+  const timePaused = React.useRef(0);
+  const initialTime = React.useRef(0);
 
   useAnimationFrame((t) => {
+    if (!initialTime.current && !isPaused) {
+      initialTime.current = t;
+      timePaused.current = 0;
+    }
+    const timestamp = t - initialTime.current;
+
     if (isRunning && !isPaused) {
-      time.set(t - timePaused.get());
+      time.set(timestamp - timePaused.current);
     } else if (isRunning && isPaused) {
       const oldTime = time.get();
 
-      const totalTimePaused = t - oldTime;
-      const newTime = t - totalTimePaused;
+      const totalTimePaused = timestamp - oldTime;
+      const newTime = timestamp - totalTimePaused;
 
-      timePaused.set(totalTimePaused);
+      timePaused.current = totalTimePaused;
+
       time.set(newTime);
       setIsPaused(false);
     }
   });
 
-  const onTogglePause = () => {
+  const onPause = React.useCallback(() => {
     if (isRunning) {
       setIsPaused(true);
       setIsRunning(false);
-    } else {
+    }
+  }, [isRunning]);
+
+  const onResume = React.useCallback(() => {
+    if (!isRunning) {
       setIsRunning(true);
     }
-  };
+  }, [isRunning]);
+
+  const onReset = React.useCallback(() => {
+    initialTime.current = 0;
+  }, []);
 
   return {
     time,
     isPaused,
-    onTogglePause,
+    onPause,
+    onResume,
+    onReset,
   };
 }
 
