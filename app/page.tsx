@@ -1,11 +1,18 @@
 import Slider from "./components/slider";
+import Stories from "./components/stories";
 
 export default function Home() {
   return (
     <main className="container mx-auto px-4 py-2">
       <p className="mb-6">Welcome to my experimental lab</p>
 
-      <Slider />
+      <div className="mb-8">
+        <Slider />
+      </div>
+
+      <div className="mb-8">
+        <Stories />
+      </div>
     </main>
   );
 }
