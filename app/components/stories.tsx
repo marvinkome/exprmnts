@@ -8,7 +8,7 @@ import { wrap } from "popmotion";
 const variants = {
   enter: (direction: number) => {
     return {
-      x: direction > 0 ? 200 : -200,
+      x: direction > 0 ? 500 : -500,
     };
   },
   center: {
@@ -18,12 +18,12 @@ const variants = {
   exit: (direction: number) => {
     return {
       zIndex: 0,
-      x: direction < 0 ? 200 : -200,
+      x: direction < 0 ? 500 : -500,
     };
   },
 };
 
-const swipeConfidenceThreshold = 10000;
+const swipeConfidenceThreshold = 1000;
 const swipePower = (offset: number, velocity: number) => {
   return Math.abs(offset) * velocity;
 };
@@ -100,8 +100,8 @@ const Stories = () => {
           transition={{
             x: {
               type: "spring",
-              bounce: 0.23,
-              duration: 0.8,
+              stiffness: 100,
+              damping: 30,
             },
           }}
           onDragEnd={(e, { offset, velocity }) => {
