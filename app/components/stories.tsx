@@ -73,7 +73,7 @@ const Stories = () => {
           <div key={item} className="h-[3px] grow relative overflow-hidden rounded-full">
             <div className="absolute w-full h-full bg-white opacity-40" />
             <motion.div
-              className="relative h-full bg-white grow"
+              className="relative h-full bg-white  grow"
               style={{ x: activeImage < idx ? "-100%" : activeImage === idx ? x : "0%" }}
             />
           </div>
@@ -115,6 +115,9 @@ const Stories = () => {
           }}
         >
           <Image src={items[activeImage]} alt="story" priority fill className="object-cover pointer-events-none rounded-lg" />
+
+          <div className="absolute top-0 bottom-0 w-1/3 z-20" onClick={() => paginate(-1)} />
+          <div className="absolute top-0 bottom-0 right-0 w-1/3 z-20" onClick={() => paginate(1)} />
         </motion.div>
       </AnimatePresence>
     </div>
