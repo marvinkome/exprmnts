@@ -1,6 +1,7 @@
 import Slider from "./components/slider";
 import Stories from "./components/stories";
 import Calendar from "./components/calendar";
+import Card from "./components/card";
 
 export default function Home() {
   return (
@@ -15,8 +16,12 @@ export default function Home() {
         <Stories />
       </div> */}
 
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <Calendar />
+      </div> */}
+
+      <div className="mb-8">
+        <Card />
       </div>
     </main>
   );
