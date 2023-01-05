@@ -3,26 +3,25 @@ import Stories from "./components/stories";
 import Calendar from "./components/calendar";
 import Card from "./components/card";
 
+const calendarData = [
+  {
+    type: "gallery",
+  },
+  {
+    type: "story",
+  },
+  {
+    type: "spotify",
+  },
+  {
+    type: "default",
+  },
+];
+
 export default function Home() {
   return (
-    <main className="container mx-auto px-4 py-2">
-      <p className="mb-6">Welcome to my experimental lab</p>
-
-      {/* <div className="mb-8">
-        <Slider />
-      </div> */}
-
-      {/* <div className="mb-8">
-        <Stories />
-      </div> */}
-
-      {/* <div className="mb-8">
-        <Calendar />
-      </div> */}
-
-      <div className="mb-8">
-        <Card />
-      </div>
+    <main className="w-screen h-screen pt-8 pb-2">
+      <Calendar />
     </main>
   );
 }
