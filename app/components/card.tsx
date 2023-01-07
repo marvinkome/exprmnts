@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import cls from "classnames";
+import { motion } from "framer-motion";
 
 const colors = [
   {
@@ -43,11 +44,11 @@ const Card = (props: CardProps) => {
 
   return (
     <>
-      <article
+      <motion.article
+        animate={props.isActive ? { zIndex: 2 } : { zIndex: 1, transition: { delay: 1.2 } }}
         onClick={() => props.setIsActive(!props.isActive)}
         style={{ color: colorObj?.text, backgroundColor: colorObj?.bg }}
-        className={cls({
-          "group bg-blue-100 text-blue-500 w-full h-full rounded-xl p-4 flex flex-col shadow": true,
+        className={cls("group relative w-full h-full rounded-xl p-4 flex flex-col shadow", {
           "cursor-pointer transition-transform duration-150 ease-in hover:scale-[0.97]": !props.isActive,
         })}
       >
@@ -57,7 +58,7 @@ const Card = (props: CardProps) => {
         </div>
 
         {props.children}
-      </article>
+      </motion.article>
     </>
   );
 };
