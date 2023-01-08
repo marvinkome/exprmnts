@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const animationProps = {
   0: {
-    position: "left-[25%] top-[30%]",
+    position: "translate-x-[-30%] translate-y-[-40%] md:translate-x-[-40%]",
     rotate: {
       default: "rotate-[3deg] group-hover:rotate-[4deg]",
       active: "rotate-[-6deg]",
@@ -17,7 +17,7 @@ const animationProps = {
     },
   },
   1: {
-    position: "left-[50%] top-[30%]",
+    position: "translate-x-[30%] translate-y-[-40%] md:translate-x-[40%]",
     rotate: {
       default: "rotate-[-3deg] group-hover:rotate-[-5deg]",
       active: "rotate-[7deg]",
@@ -26,15 +26,15 @@ const animationProps = {
     transition: { delay: 0.02, damping: 18, stiffness: 120, type: "spring" },
   },
   2: {
-    position: "left-[25%] top-[45%]",
+    position: "translate-x-[-35%] translate-y-[44%]",
     rotate: {
-      default: "rotate-[2deg] group-hover:rotate-[1deg]",
+      default: "rotate-[2deg] group-hover:rotate-[-2deg]",
       active: "rotate-[2deg]",
     },
     transition: { delay: 0.04, damping: 18, stiffness: 120, type: "spring" },
   },
   3: {
-    position: "left-[50%] top-[45%]",
+    position: "translate-x-[35%] translate-y-[44%]",
     rotate: {
       default: "rotate-[0deg] group-hover:rotate-[1deg]",
       active: "rotate-[0deg]",
@@ -57,8 +57,13 @@ const Gallery = (props: GalleryProps) => {
 
           return (
             <motion.div key={index} layoutId={image + id} className={"absolute h-full w-full"}>
-              <div className={`${animation.rotate.default} h-full overflow-hidden rounded-lg transition-transform duration-150 ease-in`}>
-                <div style={{ backgroundImage: `url(${image})` }} className="w-full h-full bg-cover" />
+              <div
+                className={`flex justify-center items-center h-full transition-transform duration-150 ease-in ${animation.rotate.default}`}
+              >
+                <div
+                  style={{ backgroundImage: `url(${image})` }}
+                  className="w-full h-[85%] bg-cover bg-center overflow-hidden rounded-lg"
+                />
               </div>
             </motion.div>
           );
@@ -66,23 +71,25 @@ const Gallery = (props: GalleryProps) => {
       </div>
 
       {props.isActive && (
-        <div className="fixed inset-0 flex justify-center items-center">
-          {props.images.map((image, index) => {
-            const animation = animationProps[index as 0 | 1 | 2 | 3];
+        <div className="fixed inset-0 flex justify-center items-center bg-[rgba(0,0,0,0.8)] md:bg-transparent">
+          <div className="relative flex justify-center items-center h-full">
+            {props.images.map((image, index) => {
+              const animation = animationProps[index as 0 | 1 | 2 | 3];
 
-            return (
-              <motion.div
-                key={index}
-                layoutId={image + id}
-                transition={animation.transition}
-                className={`absolute w-[460px] h-[280px]  ${animation.position}`}
-              >
-                <div className={`h-full overflow-hidden rounded-2xl shadow-lg ${animation.rotate.active}`}>
-                  <div style={{ backgroundImage: `url(${image})` }} className="w-full h-full bg-cover bg-center" />
-                </div>
-              </motion.div>
-            );
-          })}
+              return (
+                <motion.div
+                  key={index}
+                  layoutId={image + id}
+                  transition={animation.transition}
+                  className={`absolute w-[220px] md:w-[460px] h-[120px] md:h-[280px]`}
+                >
+                  <div className={`h-full overflow-hidden rounded-2xl shadow-lg ${animation.rotate.active} ${animation.position}`}>
+                    <div style={{ backgroundImage: `url(${image})` }} className="w-full h-full bg-cover bg-center" />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       )}
     </>

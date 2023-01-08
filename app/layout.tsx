@@ -8,9 +8,9 @@ const inter = Inter({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={`${inter.variable} h-full`}>
       <head />
-      <body>{children}</body>
+      <body className={`h-full`}>{children}</body>
     </html>
   );
 }

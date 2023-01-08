@@ -7,7 +7,7 @@ import { wrap } from "popmotion";
 const variants = {
   enter: (direction: number) => {
     return {
-      x: direction > 0 ? 500 : -500,
+      x: direction > 0 ? 450 : -450,
     };
   },
   center: {
@@ -17,7 +17,7 @@ const variants = {
   exit: (direction: number) => {
     return {
       zIndex: 0,
-      x: direction < 0 ? 500 : -500,
+      x: direction < 0 ? 400 : -400,
     };
   },
 };
@@ -66,7 +66,7 @@ const Stories = () => {
   }, [onPause]);
 
   return (
-    <div className="max-w-[400px] h-[65vh] shadow-xl rounded-lg overflow-hidden relative">
+    <div className="max-w-[400px] h-[65vh] rounded-md overflow-hidden relative">
       <div className="absolute top-0 left-0 right-0 z-10 flex space-x-2 px-3 py-3">
         {items.map((item, idx) => (
           <div key={item} className="h-[3px] grow relative overflow-hidden rounded-full">

@@ -20,7 +20,7 @@ const calendarData = [
 
 export default function Home() {
   return (
-    <main className="w-screen h-screen pt-8 pb-2">
+    <main className="w-screen h-full">
       <Calendar />
     </main>
   );
