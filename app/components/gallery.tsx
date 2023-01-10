@@ -51,19 +51,14 @@ const Gallery = (props: GalleryProps) => {
   const id = React.useId();
   return (
     <>
-      <div className="grow relative">
+      <div className="grow relative flex justify-center items-center h-full">
         {props.images.map((image, index) => {
           const animation = animationProps[index as 0 | 1 | 2 | 3];
 
           return (
-            <motion.div key={index} layoutId={image + id} className={"absolute h-full w-full"}>
-              <div
-                className={`flex justify-center items-center h-full transition-transform duration-150 ease-in ${animation.rotate.default}`}
-              >
-                <div
-                  style={{ backgroundImage: `url(${image})` }}
-                  className="w-full h-[85%] bg-cover bg-center overflow-hidden rounded-lg"
-                />
+            <motion.div key={index} layoutId={image + id} className={"absolute h-[85%] w-full"}>
+              <div className={`w-full h-full transition-transform duration-150 ease-in ${animation.rotate.default}`}>
+                <div style={{ backgroundImage: `url(${image})` }} className="w-full h-full bg-cover bg-center overflow-hidden rounded-lg" />
               </div>
             </motion.div>
           );

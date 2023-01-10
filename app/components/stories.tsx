@@ -27,16 +27,17 @@ const swipePower = (offset: number, velocity: number) => {
   return Math.abs(offset) * velocity;
 };
 
-const Stories = () => {
-  const storyTimer = 6000;
-  const items = ["/story-1.jpg", "/story-2.jpg", "/story-3.jpg"];
-
+type StoriesProps = {
+  stories: { image: string; title?: string; content?: string }[];
+  interval?: number;
+};
+const Stories = ({ stories, interval = 6000 }: StoriesProps) => {
   const [[page, direction], setPage] = React.useState([0, 0]);
-  const activeImage = wrap(0, items.length, page);
+  const activeImage = wrap(0, stories.length, page);
 
   const { time, onPause, onResume, onReset } = usePausableTime();
   const x = useTransform(time, (value) => {
-    return `${((value % storyTimer) / storyTimer) * 100 - 100}%`;
+    return `${((value % interval) / interval) * 100 - 100}%`;
   });
 
   const paginate = React.useCallback(
@@ -49,12 +50,12 @@ const Stories = () => {
 
   React.useEffect(() => {
     const cancel = time.on("change", (t) => {
-      if (Math.floor(t / storyTimer)) {
+      if (Math.floor(t / interval)) {
         paginate(1); // paginate in forward direction
       }
     });
     return () => cancel();
-  }, [time, paginate, page]);
+  }, [time, paginate, page, interval]);
 
   React.useEffect(() => {
     const callBack = () => {
@@ -68,8 +69,8 @@ const Stories = () => {
   return (
     <div className="max-w-[400px] h-[65vh] rounded-md overflow-hidden relative">
       <div className="absolute top-0 left-0 right-0 z-10 flex space-x-2 px-3 py-3">
-        {items.map((item, idx) => (
-          <div key={item} className="h-[3px] grow relative overflow-hidden rounded-full">
+        {stories.map((item, idx) => (
+          <div key={item.image} className="h-[3px] grow relative overflow-hidden rounded-full">
             <div className="absolute w-full h-full bg-white opacity-40" />
             <motion.div
               className="relative h-full bg-white  grow"
@@ -113,7 +114,23 @@ const Stories = () => {
             }
           }}
         >
-          <Image src={items[activeImage]} alt="story" priority fill className="object-cover pointer-events-none rounded-lg" />
+          <div
+            className="absolute inset-0 z-10 pointer-events-none bg-cover bg-center rounded-lg"
+            style={{
+              backgroundImage: `${
+                stories[activeImage].title || stories[activeImage].content
+                  ? "linear-gradient(0deg, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0) 70%),"
+                  : ""
+              } url(${stories[activeImage].image})`,
+            }}
+          >
+            <div className="flex flex-col h-full items-center justify-end p-8">
+              <h3 className="text-3xl mb-2 font-semibold text-white">{stories[activeImage].title}</h3>
+              <p className="text-center text-white opacity-[0.85] [text-shadow:0_1px_2px_rgb(0_0_0_/_20%)]">
+                {stories[activeImage].content}
+              </p>
+            </div>
+          </div>
 
           <div className="absolute top-0 bottom-0 w-1/3 z-20" onClick={() => paginate(-1)} />
           <div className="absolute top-0 bottom-0 right-0 w-1/3 z-20" onClick={() => paginate(1)} />

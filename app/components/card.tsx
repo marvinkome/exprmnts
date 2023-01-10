@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import cls from "classnames";
 import Gallery from "./gallery";
 import Stories from "./stories";
 import { motion } from "framer-motion";
 import { usePopper } from "react-popper";
-import { useClickAway } from "react-use";
 
 const colors = [
   {
@@ -50,7 +49,7 @@ const Card = React.forwardRef(function CardInner(props: CardProps, ref: React.Fo
     <>
       <motion.article
         ref={ref}
-        animate={props.isActive ? { zIndex: 2 } : { zIndex: 1, transition: { delay: 1.2 } }}
+        animate={props.isActive ? { zIndex: 2 } : { zIndex: 1, transition: { delay: 0.2 } }}
         onClick={() => props.setIsActive?.(!props.isActive)}
         style={{ color: colorObj?.text, backgroundColor: colorObj?.bg }}
         className={cls("group relative w-full h-full rounded-xl p-3 flex flex-col shadow", {
@@ -58,7 +57,7 @@ const Card = React.forwardRef(function CardInner(props: CardProps, ref: React.Fo
           "transition-transform duration-150 ease-in hover:scale-[0.97]": !props.isActive && props.setIsActive,
         })}
       >
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-base mb-1">{props.title}</h1>
           <p className="text-xs font-medium uppercase opacity-60">{props.date}</p>
         </div>
@@ -96,17 +95,32 @@ type StoryCardProps = {
 export const StoryCard = (props: StoryCardProps) => {
   const [isActive, setIsActive] = React.useState(!!props.isActive);
 
-  const [rootEl, setRootEl] = React.useState(null);
-  const [popperElement, setPopperElement] = React.useState<any>(null);
+  const contentEl = React.useRef<HTMLDivElement>(null);
+
+  const [rootEl, setRootEl] = React.useState<HTMLDivElement | null>(null);
+  const [popperElement, setPopperElement] = React.useState<HTMLDivElement | null>(null);
   const { styles, attributes } = usePopper(rootEl, popperElement, {
     placement: "left-end",
   });
 
-  useClickAway({ current: rootEl }, (e) => {
-    if (isActive) {
-      setIsActive(!isActive);
-    }
-  });
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const content = contentEl.current;
+      const target = e.target as any;
+      const card = rootEl;
+
+      if (content && !content.contains(target) && !card?.contains(target)) {
+        if (isActive) {
+          setIsActive(false);
+        }
+      }
+    };
+
+    document.addEventListener("click", handler);
+    return () => {
+      document.removeEventListener("click", handler);
+    };
+  }, [rootEl, isActive]);
 
   return (
     <>
@@ -117,25 +131,26 @@ export const StoryCard = (props: StoryCardProps) => {
         title={props.title}
         date={props.date}
         setIsActive={(value) => setIsActive(value)}
-      >
-        {isActive && (
-          <div ref={setPopperElement} style={styles.popper} {...attributes.popper} className="z-[10]">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0.5 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{
-                delay: 0,
-                damping: 18,
-                stiffness: 120,
-                type: "spring",
-              }}
-              className="bg-white w-[400px] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-[0.125rem] mx-1 rounded-xl"
-            >
-              <Stories />
-            </motion.div>
-          </div>
-        )}
-      </Card>
+      />
+
+      {isActive && (
+        <div ref={setPopperElement} style={styles.popper} {...attributes.popper} className="z-[10]">
+          <motion.div
+            ref={contentEl}
+            initial={{ scale: 0.9, opacity: 0.5 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{
+              delay: 0,
+              damping: 18,
+              stiffness: 120,
+              type: "spring",
+            }}
+            className="bg-white w-[400px] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-[0.125rem] mx-1 rounded-xl"
+          >
+            <Stories stories={props.stories} />
+          </motion.div>
+        </div>
+      )}
     </>
   );
 };

@@ -8,6 +8,8 @@ const Calendar = () => {
   const stories = [
     {
       image: "/story-2.jpg",
+      title: "Music is magical",
+      content: "\"I've got a beat-up toy plane and you're the only thing preventing me from giving it away.\"",
     },
     {
       image: "/story-3.jpg",
@@ -16,8 +18,6 @@ const Calendar = () => {
     },
     {
       image: "/story-1.jpg",
-      title: "Music is magical",
-      content: "\"I've got a beat-up toy plane and you're the only thing preventing me from giving it away.\"",
     },
   ];
 
@@ -48,8 +48,8 @@ const Calendar = () => {
           </header>
 
           <article className="w-full h-full grow p-2 pb-16 md:pb-12 border-r grid grid-cols-1 grid-rows-4 gap-2">
-            <div className="relative col-span-1 row-start-1 row-end-3">
-              <GalleryCard title="Birthday at YamYam" date="21 October" color="blue" images={images} />
+            <div className="relative col-span-1 row-start-1 row-end-2">
+              <StoryCard title="Surf curse concert was amazing!!" date="19 October" color="blue" stories={stories} />
             </div>
           </article>
         </section>
@@ -61,8 +61,8 @@ const Calendar = () => {
           </header>
 
           <article className="w-full h-full grow p-2 pb-16 md:pb-12 border-r grid grid-cols-1 grid-rows-4 gap-2">
-            <div className="col-span-1 row-start-2 row-end-3">
-              <Card title="Birthday at YamYam" date="21 October" color="red" />
+            <div className="col-span-1 row-start-2 row-end-4">
+              <GalleryCard title="Birthday at YamYam" date="26 November" color="yellow" images={images} />
             </div>
           </article>
         </section>
@@ -104,8 +104,21 @@ const Calendar = () => {
           </header>
 
           <article className="w-full h-full grow p-2 pb-16 md:pb-12 border-r grid grid-cols-1 grid-rows-4 gap-2">
-            <div className="col-span-1 row-start-3 row-end-5">
-              <GalleryCard title="Birthday at YamYam" date="21 October" color="yellow" images={images} />
+            <div className="col-span-1 row-start-2 row-end-3">
+              <Card title="Birthday at YamYam" date="21 October" color="red" />
+            </div>
+          </article>
+        </section>
+
+        <section className="w-[60vw] sm:w-[40vw] md:w-[20vw] h-full flex flex-col">
+          <header className="border-b text-center pb-4 pt-14 md:pt-12">
+            <p className="font-medium text-sm">Jan 5</p>
+            <p className="text-xs text-slate-400">2021</p>
+          </header>
+
+          <article className="w-full h-full grow p-2 pb-16 md:pb-12 border-r grid grid-cols-1 grid-rows-4 gap-2">
+            <div className="col-span-1 row-start-1 row-end-2">
+              <Card title="Here we go again, work resumes" date="2 January" color="blue" />
             </div>
           </article>
         </section>
