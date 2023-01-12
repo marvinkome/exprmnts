@@ -5,6 +5,7 @@ import Gallery from "./gallery";
 import Stories from "./stories";
 import { motion } from "framer-motion";
 import { usePopper } from "react-popper";
+import { useMedia } from "react-use";
 
 const colors = [
   {
@@ -93,15 +94,16 @@ type StoryCardProps = {
   stories: { image: string; title?: string; content?: string }[];
 };
 export const StoryCard = (props: StoryCardProps) => {
-  const [isActive, setIsActive] = React.useState(!!props.isActive);
-
   const contentEl = React.useRef<HTMLDivElement>(null);
+  const [isActive, setIsActive] = React.useState(!!props.isActive);
 
   const [rootEl, setRootEl] = React.useState<HTMLDivElement | null>(null);
   const [popperElement, setPopperElement] = React.useState<HTMLDivElement | null>(null);
   const { styles, attributes } = usePopper(rootEl, popperElement, {
     placement: "left-end",
   });
+
+  const isMd = useMedia("(min-width: 768px)");
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -120,7 +122,7 @@ export const StoryCard = (props: StoryCardProps) => {
     return () => {
       document.removeEventListener("click", handler);
     };
-  }, [rootEl, isActive]);
+  }, [isActive, rootEl]);
 
   return (
     <>
@@ -134,22 +136,46 @@ export const StoryCard = (props: StoryCardProps) => {
       />
 
       {isActive && (
-        <div ref={setPopperElement} style={styles.popper} {...attributes.popper} className="z-[10]">
-          <motion.div
-            ref={contentEl}
-            initial={{ scale: 0.9, opacity: 0.5 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{
-              delay: 0,
-              damping: 18,
-              stiffness: 120,
-              type: "spring",
-            }}
-            className="bg-white w-[400px] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-[0.125rem] mx-1 rounded-xl"
-          >
-            <Stories stories={props.stories} />
-          </motion.div>
-        </div>
+        <>
+          {isMd ? (
+            <div ref={setPopperElement} style={styles.popper} {...attributes.popper} className="z-[10]">
+              <motion.div
+                ref={contentEl}
+                initial={{ scale: 0.9, opacity: 0.5 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  delay: 0,
+                  damping: 18,
+                  stiffness: 120,
+                  type: "spring",
+                }}
+                className="bg-white w-[400px] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-[0.125rem] mx-1 rounded-xl"
+              >
+                <Stories stories={props.stories} />
+              </motion.div>
+            </div>
+          ) : (
+            <div className="fixed inset-0 z-[10]">
+              <div className="bg-black opacity-80 h-full w-full absolute inset-0" />
+              <div className="w-full h-full flex items-center justify-center">
+                <motion.div
+                  ref={contentEl}
+                  initial={{ scale: 0.9, opacity: 0.5 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    delay: 0,
+                    damping: 18,
+                    stiffness: 120,
+                    type: "spring",
+                  }}
+                  className="bg-white max-w-xs w-full shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-1 mx-1 rounded-xl"
+                >
+                  <Stories stories={props.stories} />
+                </motion.div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </>
   );
