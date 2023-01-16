@@ -6,6 +6,16 @@ module.exports = {
       fontFamily: {
         sans: ["var(--font-inter)"],
       },
+      keyframes: {
+        "story-indicator": {
+          "0%": {
+            width: "0%",
+          },
+          "100%": {
+            width: "100%",
+          },
+        },
+      },
     },
   },
   plugins: [],

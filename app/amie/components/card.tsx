@@ -103,7 +103,7 @@ export const StoryCard = (props: StoryCardProps) => {
     placement: "left-end",
   });
 
-  const isMd = useMedia("(min-width: 768px)");
+  const isMd = useMedia("(min-width: 768px)", false);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -141,15 +141,9 @@ export const StoryCard = (props: StoryCardProps) => {
             <div ref={setPopperElement} style={styles.popper} {...attributes.popper} className="z-[10]">
               <motion.div
                 ref={contentEl}
-                initial={{ scale: 0.9, opacity: 0.5 }}
+                initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{
-                  delay: 0,
-                  damping: 18,
-                  stiffness: 120,
-                  type: "spring",
-                }}
-                className="bg-white w-[400px] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-[0.125rem] mx-1 rounded-xl"
+                className="bg-white w-[380px] h-[65vh] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-1 mx-1 rounded-xl"
               >
                 <Stories stories={props.stories} />
               </motion.div>
@@ -160,15 +154,9 @@ export const StoryCard = (props: StoryCardProps) => {
               <div className="w-full h-full flex items-center justify-center">
                 <motion.div
                   ref={contentEl}
-                  initial={{ scale: 0.9, opacity: 0.5 }}
+                  initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{
-                    delay: 0,
-                    damping: 18,
-                    stiffness: 120,
-                    type: "spring",
-                  }}
-                  className="bg-white max-w-xs w-full shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-1 mx-1 rounded-xl"
+                  className="bg-white w-[320px] h-[65vh] shadow-[0px_0px_50px_-12px_rgba(0,0,0,0.5)] p-1 mx-1 rounded-xl"
                 >
                   <Stories stories={props.stories} />
                 </motion.div>
