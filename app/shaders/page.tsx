@@ -17,6 +17,10 @@ const Page = () => {
         <ClientOnly>
           <ShaderLoader url="/shaders/sdf.glsl" />
         </ClientOnly>
+
+        <ClientOnly>
+          <ShaderLoader url="/shaders/tv-noise.glsl" />
+        </ClientOnly>
       </div>
     </div>
   );
