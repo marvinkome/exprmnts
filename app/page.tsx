@@ -12,6 +12,14 @@ export default function Home() {
         <li>
           <NextLink href="/amie">Amie Calendar clone</NextLink>
         </li>
+
+        <li>
+          <NextLink href="/">Paystack music radio and intro (wip)</NextLink>
+        </li>
+
+        <li>
+          <NextLink href="/shaders">Shaders collections (wip)</NextLink>
+        </li>
       </ul>
     </main>
   );
