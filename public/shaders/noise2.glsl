@@ -37,7 +37,8 @@ void main() {
   vec2 st = gl_FragCoord.xy/u_resolution;
   vec3 color = vec3(0.0);
 
-  float y = noise_2d(vec2(st * 20.5));
+  float timer = sin(u_time * 0.2) * 30.0;
+  float y = noise_2d(vec2(st * timer));
 
   vec2 position = vec2(0., 0.) + y;
   float rect = draw_rect(position, 1.0, 1.0, st);
