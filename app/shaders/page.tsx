@@ -11,10 +11,16 @@ const Page = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* <ClientOnly>
+      {/* <div className="w-[360px]">
+        <ClientOnly>
           <ShaderLoader url="/shaders/playground.glsl" />
-        </ClientOnly> */}
+        </ClientOnly>
+      </div> */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <ClientOnly>
+          <ShaderLoader url="/shaders/playground.glsl" />
+        </ClientOnly>
 
         <ClientOnly>
           <ShaderLoader url="/shaders/noise2.glsl" />
